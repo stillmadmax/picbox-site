@@ -708,10 +708,3 @@ h1 {
     font-size: 28px;
   }
 }
-
-/* The "coming soon" pill does not fit next to logo and language switch on a phone */
-@media (max-width: 560px) {
-  .nav-links .btn-ghost {
-    display: none;
-  }
-}
