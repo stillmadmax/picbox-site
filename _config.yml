@@ -3,8 +3,7 @@ description: PicBox - die iPhone-App, die deine Fotomediathek in Alben nach Jahr
 lang: de
 
 # Contact address shown on support, privacy and imprint pages.
-# TODO: replace with the PicBox mailbox before the site goes live.
-email: kontakt@example.com
+email: pbpicbox@gmail.com
 
 # The landing pages are static HTML and pass through untouched.
 # Only the text pages (privacy, support, imprint) use the Jekyll layout.
