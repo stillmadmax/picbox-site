@@ -1,0 +1,47 @@
+# Builds and deploys the site itself (Pages source: "GitHub Actions" instead of a branch).
+# Reason: the postal address is NOT in the repo, only in the repository secret
+# KONTAKT_ADRESSE ("Street No<br>Postcode City"), and is inserted into the four
+# legal pages here at build time. The repo holds the placeholder %%KONTAKT_ADRESSE%%.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Insert postal address from secret
+        env:
+          ADR: ${{ secrets.KONTAKT_ADRESSE }}
+        run: |
+          if [ -z "$ADR" ]; then
+            echo "::error::Secret KONTAKT_ADRESSE is missing - the placeholder would stay on the live site."
+            exit 1
+          fi
+          perl -0pi -e 's/%%KONTAKT_ADRESSE%%/$ENV{ADR}/g' \
+            datenschutz.md impressum.md en/privacy.md en/imprint.md
+      - uses: actions/jekyll-build-pages@v1
+      - uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
